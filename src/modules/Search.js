@@ -4,11 +4,16 @@ import $ from "jquery";
 class Search {
     // 1. Describe and create/innitiate our object
     constructor() {
+        this.resultsDiv = $("#search-overlay__results");
         this.openButton = $(".js-search-trigger");
         this.closeButton = $(".search-overlay__close");
         this.searchOverlay = $(".search-overlay");
+        this.searchField = $("#search-term");
         this.events();
         this.isOverlayOpen = false;
+        this.isSpinnerVisible = false;
+        this.previousValue;
+        this.typingTimer;
     }
 
     // 2. Events - make connection between construct properties and methods 
@@ -18,12 +23,37 @@ class Search {
         this.openButton.on("click", this.openOverlay.bind(this));
         this.closeButton.on("click", this.closeOverlay.bind(this));
         $(document).on("keydown", this.keyPressdDispatcer.bind(this));
+
+        this.searchField.on("keyup", this.typingLogic.bind(this));
     }
 
     // 3. Where methods/functions/actions live
-    keyPressdDispatcer(e) {
+    typingLogic() {
+        if (this.searchField.val() != this.previousValue) {
+            clearTimeout(this.typingTimer);
 
-        if (e.keyCode == 83 && !this.isOverlayOpen) {
+            if (this.searchField.val()) {
+                if (!this.isSpinnerVisible) {
+                    this.resultsDiv.html('<div class="spinner-loader"></div>');
+                    this.isSpinnerVisible = true;
+                }
+                this.typingTimer = setTimeout(this.getResults.bind(this), 2000);
+            } else {
+                this.resultsDiv.html('');
+                this.isSpinnerVisible = false;
+            }
+        }
+        this.previousValue = this.searchField.val();
+    }
+
+    getResults() {
+        this.resultsDiv.html("Imagine real search results here");
+        this.isSpinnerVisible = false;
+
+    }
+
+    keyPressdDispatcer(e) {
+        if (e.keyCode == 83 && !this.isOverlayOpen && !$("input, textarea").is(":focus")) {
             this.openOverlay();
         }
         if (e.keyCode == 27 && this.isOverlayOpen) {
