@@ -12,15 +12,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _css_style_scss__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../css/style.scss */ "./css/style.scss");
 /* harmony import */ var _modules_MobileMenu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/MobileMenu */ "./src/modules/MobileMenu.js");
 /* harmony import */ var _modules_HeroSlider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/HeroSlider */ "./src/modules/HeroSlider.js");
+/* harmony import */ var _modules_Search__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/Search */ "./src/modules/Search.js");
 
 
 // Our modules / classes
 
 
 
+
 // Instantiate a new object using our modules/classes
 const mobileMenu = new _modules_MobileMenu__WEBPACK_IMPORTED_MODULE_1__["default"]();
 const heroSlider = new _modules_HeroSlider__WEBPACK_IMPORTED_MODULE_2__["default"]();
+const search = new _modules_Search__WEBPACK_IMPORTED_MODULE_3__["default"]();
 
 /***/ }),
 
@@ -94,6 +97,62 @@ class MobileMenu {
 
 /***/ }),
 
+/***/ "./src/modules/Search.js":
+/*!*******************************!*\
+  !*** ./src/modules/Search.js ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "jquery");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+
+class Search {
+  // 1. Describe and create/innitiate our object
+  constructor() {
+    this.openButton = jquery__WEBPACK_IMPORTED_MODULE_0___default()(".js-search-trigger");
+    this.closeButton = jquery__WEBPACK_IMPORTED_MODULE_0___default()(".search-overlay__close");
+    this.searchOverlay = jquery__WEBPACK_IMPORTED_MODULE_0___default()(".search-overlay");
+    this.events();
+    this.isOverlayOpen = false;
+  }
+
+  // 2. Events - make connection between construct properties and methods 
+  events() {
+    // on method changes value of ~this~  keyword to pointing the HTML element on which is clicked on!
+    // We need to call bind() function and send the this value!
+    this.openButton.on("click", this.openOverlay.bind(this));
+    this.closeButton.on("click", this.closeOverlay.bind(this));
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).on("keydown", this.keyPressdDispatcer.bind(this));
+  }
+
+  // 3. Where methods/functions/actions live
+  keyPressdDispatcer(e) {
+    if (e.keyCode == 83 && !this.isOverlayOpen) {
+      this.openOverlay();
+    }
+    if (e.keyCode == 27 && this.isOverlayOpen) {
+      this.closeOverlay();
+    }
+  }
+  openOverlay() {
+    this.searchOverlay.addClass("search-overlay--active");
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()("body").addClass("body-no-scroll");
+    this.isOverlayOpen = true;
+  }
+  closeOverlay() {
+    this.searchOverlay.removeClass("search-overlay--active");
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()("body").removeClass("body-no-scroll");
+    this.isOverlayOpen = false;
+  }
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Search);
+
+/***/ }),
+
 /***/ "./css/style.scss":
 /*!************************!*\
   !*** ./css/style.scss ***!
@@ -103,6 +162,16 @@ class MobileMenu {
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
 
+
+/***/ }),
+
+/***/ "jquery":
+/*!*************************!*\
+  !*** external "jQuery" ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = window["jQuery"];
 
 /***/ }),
 
@@ -4157,6 +4226,18 @@ var Glide = /*#__PURE__*/function (_Core) {
 /******/ 				}
 /******/ 			}
 /******/ 			return result;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
 /******/ 		};
 /******/ 	})();
 /******/ 	
