@@ -26,6 +26,7 @@ while (have_posts()) {
 
         ));
         
+        // If current page has a parent (child page) or if it is parent page
         if ($theParent or $testArray) { ?>
         <div class="page-links">
             <h2 class="page-links__title"><a href="<?php echo get_permalink($theParent) ?>"><?php echo get_the_title($theParent); ?></a></h2>

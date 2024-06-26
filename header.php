@@ -18,6 +18,7 @@
             <div class="site-header__menu group">
                 <nav class="main-navigation">
                     <?php
+                    // Display a dynamic navigation menu
                     // wp_nav_menu(array(
                     //     'theme_location' => 'headerMenuLocation',
                     // ));
