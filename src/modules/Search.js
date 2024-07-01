@@ -50,27 +50,6 @@ class Search {
         this.previousValue = this.searchField.value
     }
 
-    // getResults() {
-    //     $.when(
-    //         $.getJSON(`/wp-json/wp/v2/posts?search=${this.searchField.val()}`), 
-    //         $.getJSON(`/wp-json/wp/v2/pages?search=${this.searchField.val()}`)
-    //     ).then((posts, pages) => {
-    //         let combbinedResult = posts[0].concat(pages[0]);
-    //             this.resultsDiv.html(`
-    //                 <h2 class="search-overlay__section-title">General Hello</h2>
-    //                 ${combbinedResult.length 
-    //                     ? 
-    //                     `<ul class="link-list min-list">
-    //                         ${combbinedResult.map(item => `<li><a href="${item.link}">${item.title.rendered}</a></li>`).join("")}
-    //                     </ul>`
-    //                     : 
-    //                     `<p>No general information matches that search.</p>`}
-    //             `);
-    //         this.isSpinnerVisible = false;
-    //     }, () => {
-    //         this.resultsDiv.html("<h2>Unexpected error, please try againg.</h2>")
-    //     });
-    // }
 
     async getResults() {
         try {
@@ -127,6 +106,23 @@ class Search {
                             `<p>No campuses matches that search.<a href="/campuses">View all campuses</a></p>`
                         }
                         <h2 class="search-overlay__section-title">Events</h2>
+                         ${results.events.length 
+                            ? 
+                            `${results.events.map(item => `
+                            <div class="event-summary">
+                                <a class="event-summary__date t-center" href="${item.permalink}">
+                                    <span class="event-summary__month">${item.month}</span>
+                                    <span class="event-summary__day">${item.day}</span>
+                                </a>
+                                <div class="event-summary__content">
+                                    <h5 class="event-summary__title headline headline--tiny"><a href="${item.permalink}">${item.title}</a></h5>
+                                    <p>${item.description}<a href="${item.permalink}" class="nu gray">Learn more</a></p>
+                                </div>
+                            </div>
+                            `).join("")}`
+                            : 
+                            `<p>No events matches that search.<a href="/events">View all events</a></p>`
+                        }
                    </div> 
                 </div>
                 
@@ -153,7 +149,9 @@ class Search {
         this.searchField.value = ""
         setTimeout(() => this.searchField.focus(), 301)
         console.log("our open method just ran!")
-        this.isOverlayOpen = true
+        this.isOverlayOpen = true;
+        // return false will prevent the default behavior of ~a~ or link elements (because we set <a href="/search"... in header.php to apply when the JS code is disabled)
+        return false;
     }
 
     closeOverlay() {
