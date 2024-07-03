@@ -2178,7 +2178,7 @@ class MyNotes {
   }
   events() {
     // Postavljam na cijeli <ul> element event listener, a zatim u metodi clickHandler provjeravam koje element je targetiran
-    // myNotes will always exist when the page first loads, if th eactual interior element that you clicked on matches
+    // myNotes will always exist when the page first loads, if the actual interior element that you clicked on matches
     this.myNotes.addEventListener("click", e => this.clickHandler(e));
     document.querySelector(".submit-note").addEventListener("click", () => this.createNote());
   }
@@ -2196,6 +2196,8 @@ class MyNotes {
     }
     return thisNote;
   }
+
+  // Methods will go here
   editNote(e) {
     const thisNote = this.findNearestParentLi(e.target);
     if (thisNote.getAttribute("data-state") == "editable") {
@@ -2213,7 +2215,6 @@ class MyNotes {
     thisNote.querySelector(".note-body-field").classList.add("note-active-field");
     thisNote.querySelector(".update-note").classList.add("update-note--visible");
     thisNote.setAttribute("data-state", "editable");
-    // console.log(thisNote.getAttribute("data-state"));
   }
   makeNoteReadOnly(thisNote) {
     thisNote.querySelector(".edit-note").innerHTML = '<i class="fa fa-pencil" aria-hidden="true"></i> Edit';
@@ -2223,10 +2224,7 @@ class MyNotes {
     thisNote.querySelector(".note-body-field").classList.remove("note-active-field");
     thisNote.querySelector(".update-note").classList.remove("update-note--visible");
     thisNote.setAttribute("data-state", "cancel");
-    // console.log(thisNote.getAttribute("data-state"));
   }
-
-  // Method will go here
   async deleteNote(e) {
     // alert("Do you want to delete this note????");
     const thisNote = this.findNearestParentLi(e.target);
@@ -2239,6 +2237,9 @@ class MyNotes {
       setTimeout(function () {
         thisNote.remove();
       }, 401);
+      if (response.data.userNoteCount < 5) {
+        document.querySelector(".note-limit-message").classList.remove("active");
+      }
       console.log("congrats!");
       console.log(response);
     } catch (error) {
@@ -2270,39 +2271,43 @@ class MyNotes {
     };
     try {
       const response = await axios__WEBPACK_IMPORTED_MODULE_0___default().post(`/wp-json/wp/v2/note/`, ourNewPost);
-      document.querySelector(".new-note-title").value = "";
-      document.querySelector(".new-note-body").value = "";
-      document.querySelector("#my-notes").insertAdjacentHTML("afterbegin", ` <li data-id="${response.data.id}" class="fade-in-calc">
-                    <input readonly class="note-title-field" value="${response.data.title.raw}">
-                    <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</span>
-                    <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</span>
-                    <textarea readonly class="note-body-field">${response.data.content.raw}</textarea>
-                    <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i> Save</span>
-                </li>`);
+      if (response.data != "You have reached your note limit.") {
+        document.querySelector(".new-note-title").value = "";
+        document.querySelector(".new-note-body").value = "";
+        document.querySelector("#my-notes").insertAdjacentHTML("afterbegin", ` <li data-id="${response.data.id}" class="fade-in-calc">
+                        <input readonly class="note-title-field" value="${response.data.title.raw}">
+                        <span class="edit-note"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</span>
+                        <span class="delete-note"><i class="fa fa-trash-o" aria-hidden="true"></i> Delete</span>
+                        <textarea readonly class="note-body-field">${response.data.content.raw}</textarea>
+                        <span class="update-note btn btn--blue btn--small"><i class="fa fa-arrow-right" aria-hidden="true"></i> Save</span>
+                    </li>`);
 
-      // notice in the above HTML for the new <li> I gave it a class of fade-in-calc which will make it invisible temporarily so we can count its natural height
+        // notice in the above HTML for the new <li> I gave it a class of fade-in-calc which will make it invisible (opacity: 0) temporarily so we can count its natural height
 
-      let finalHeight; // browser needs a specific height to transition to, you can't transition to 'auto' height
-      let newlyCreated = document.querySelector("#my-notes li");
+        let finalHeight; // browser needs a specific height to transition to, you can't transition to 'auto' height
+        let newlyCreated = document.querySelector("#my-notes li"); // this return first <li> element that is a descendant of an element with the ID my-notes
 
-      // give the browser 30 milliseconds to have the invisible element added to the DOM before moving on
-      setTimeout(function () {
-        finalHeight = `${newlyCreated.offsetHeight}px`;
-        newlyCreated.style.height = "0px";
-      }, 30);
+        // give the browser 30 milliseconds to have the invisible element added to the DOM before moving on
+        setTimeout(function () {
+          finalHeight = `${newlyCreated.offsetHeight}px`;
+          newlyCreated.style.height = "0px";
+        }, 30);
 
-      // give the browser another 20 milliseconds to count the height of the invisible element before moving on
-      setTimeout(function () {
-        newlyCreated.classList.remove("fade-in-calc");
-        newlyCreated.style.height = finalHeight;
-      }, 50);
+        // give the browser another 20 milliseconds to count the height of the invisible element before moving on
+        setTimeout(function () {
+          newlyCreated.classList.remove("fade-in-calc");
+          newlyCreated.style.height = finalHeight;
+        }, 50);
 
-      // wait the duration of the CSS transition before removing the hardcoded calculated height from the element so that our design is responsive once again
-      setTimeout(function () {
-        newlyCreated.style.removeProperty("height");
-      }, 450);
-      console.log("congrats!");
-      console.log(response);
+        // wait the duration of the CSS transition before removing the hardcoded calculated height from the element so that our design is responsive once again
+        setTimeout(function () {
+          newlyCreated.style.removeProperty("height");
+        }, 450);
+        console.log("congrats!");
+        console.log(response);
+      } else {
+        document.querySelector(".note-limit-message").classList.add("active");
+      }
     } catch (error) {
       console.log("sorry");
       console.log(error);
