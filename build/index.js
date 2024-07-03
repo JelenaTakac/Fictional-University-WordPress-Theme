@@ -2066,9 +2066,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_HeroSlider__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/HeroSlider */ "./src/modules/HeroSlider.js");
 /* harmony import */ var _modules_Search__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/Search */ "./src/modules/Search.js");
 /* harmony import */ var _modules_MyNotes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/MyNotes */ "./src/modules/MyNotes.js");
+/* harmony import */ var _modules_Like__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/Like */ "./src/modules/Like.js");
 
 
 // Our modules / classes
+
 
 
 
@@ -2079,6 +2081,7 @@ const mobileMenu = new _modules_MobileMenu__WEBPACK_IMPORTED_MODULE_1__["default
 const heroSlider = new _modules_HeroSlider__WEBPACK_IMPORTED_MODULE_2__["default"]();
 const search = new _modules_Search__WEBPACK_IMPORTED_MODULE_3__["default"]();
 const myNotes = new _modules_MyNotes__WEBPACK_IMPORTED_MODULE_4__["default"]();
+const like = new _modules_Like__WEBPACK_IMPORTED_MODULE_5__["default"]();
 
 /***/ }),
 
@@ -2121,6 +2124,62 @@ class HeroSlider {
   }
 }
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (HeroSlider);
+
+/***/ }),
+
+/***/ "./src/modules/Like.js":
+/*!*****************************!*\
+  !*** ./src/modules/Like.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+class Like {
+  constructor() {
+    if (document.querySelector(".like-box")) {
+      (axios__WEBPACK_IMPORTED_MODULE_0___default().defaults).headers.common["X-WP-Nonce"] = universityData.nonce;
+      this.likeBoxCounter = document.querySelector(".like-box");
+      this.events(); // invoke events
+    }
+
+    // alert("hello like post!!");
+  }
+  events() {
+    this.likeBoxCounter.addEventListener("click", this.ourClickDispecher.bind(this));
+  }
+  ourClickDispecher(e) {
+    let currentLikeBox = e.target;
+    if (!currentLikeBox.classList.contains("like-box")) {
+      currentLikeBox = currentLikeBox.parentElement;
+      console.log(currentLikeBox);
+    }
+    // console.log(e.target);
+
+    // This if/esle statement is used for toggle between like/not liked professor.
+    if (this.likeBoxCounter.getAttribute("data-exists") === "yes") {
+      this.deleteLike();
+    } else {
+      this.createLike();
+    }
+  }
+  createLike() {
+    // Want here to send HTTP request to Custom WordPress REST API
+    // alert('hello create like');
+  }
+  deleteLike() {
+    // alert("hello delte like");
+  }
+
+  // methods go here
+}
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Like);
 
 /***/ }),
 
