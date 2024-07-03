@@ -18,7 +18,7 @@ class Like {
     ourClickDispecher(e) {
         let currentLikeBox = e.target; 
 
-        if (!currentLikeBox.classList.contains("like-box")) {
+        while (!currentLikeBox.classList.contains("like-box")) {
             currentLikeBox = currentLikeBox.parentElement;
             console.log(currentLikeBox);
         }
@@ -26,10 +26,10 @@ class Like {
 
 
         // This if/esle statement is used for toggle between like/not liked professor.
-        if (this.likeBoxCounter.getAttribute("data-exists") === "yes") {
-            this.deleteLike(currentLikeBox);
+        if (currentLikeBox.getAttribute("data-exists") == "yes") {
+            this.deleteLike(currentLikeBox)
         } else {
-            this.createLike(currentLikeBox);
+            this.createLike(currentLikeBox)
         }
     }
 
@@ -41,10 +41,15 @@ class Like {
 
         // Ovu informaciju saljem na server(PHP REST API)
         // let newDataLike = {'professorId': 789};
-        let newDataLike = {'professorId': currentLikeBox.getAttribute("data-professor")};
+        let professorID = {'professorId': currentLikeBox.getAttribute("data-professor")};
 
         try {
-            const response = await axios.post(`/wp-json/university/v1/manageLike`, newDataLike);
+            const response = await axios.post(`/wp-json/university/v1/manageLike`, professorID);
+            currentLikeBox.setAttribute("data-exists", 'yes');
+            let likeCount = parseInt(document.querySelector(".like-count").innerHTML, 10);
+            likeCount++;
+            currentLikeBox.querySelector(".like-count").innerHTML = likeCount;
+            currentLikeBox.setAttribute("data-like", response.data)
             console.log('congrats');
             console.log(response);
         } catch (error) {
@@ -56,8 +61,15 @@ class Like {
     async deleteLike(currentLikeBox) {
         // alert("hello delte like");
 
-         try {
-            const response = await axios.delete(`/wp-json/university/v1/manageLike`);
+        let likePostID = { "like": currentLikeBox.getAttribute("data-like") };
+
+        try {
+            const response = await axios.delete(`/wp-json/university/v1/manageLike`, likePostID);
+            currentLikeBox.setAttribute("data-exists", "no")
+            let likeCount = parseInt(currentLikeBox.querySelector(".like-count").innerHTML, 10);
+            likeCount--;
+            currentLikeBox.querySelector(".like-count").innerHTML = likeCount;
+            currentLikeBox.setAttribute("data-like", "");
             console.log('congrats');
             console.log(response);
         } catch (error) {
